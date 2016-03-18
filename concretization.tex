@@ -1,1 +1,60 @@
 \section{Concretization}
+
+\newcommand{\env}{\eta}
+\newcommand{\syms}{\mathrm{Symbol}}
+\newcommand{\vals}{\mathrm{Value}}
+\newcommand{\vfunc}{\mathrm{Func}}
+\newcommand{\vset}{\mathrm{Set}}
+\newcommand{\vscalar}{\mathrm{Scalar}}
+\newcommand{\inject}{\mathbf{Injective}}
+\newcommand{\surject}{\mathbf{Surjective}}
+
+An environment $\env{}$ maps symbols that occur in constraints to corresponding values.  Values
+can take on three forms: Functions, tagged with $\vfunc{}$; Sets, tagged with $\vset{}$; and
+Scalars, tagged with $\vscalar{}$.
+
+\begin{align*}
+  &\env : \syms \rightarrow \vals \\
+  &\vals = (\vfunc \times \vals \rightarrow \vals) \cup (\vset \times \mathcal{P}(\vals)) \cup (\vscalar \times \vals)
+\end{align*}
+
+
+Concretization of set constraints:
+
+\begin{align*}
+  &\env \models E_1 = \{ f(x) \ | \ x \in E_2 \} \ \mathrm{iff} \\
+  &\qquad \forall \hat{V}_1, \hat{V}_2, \hat{f}.
+    \  s,\hat{V}_1 \models E_1 \ \mathrm{and}
+    \  s,\hat{V}_2 \models E_2 \ \mathrm{and}
+    \  s(f)   = (\vfunc, \hat{f})  \ \rightarrow \\
+  &\qquad\qquad \forall i \in \hat{V}_2. \ \exists j \in \hat{V}_1. \ \hat{f}(i) = j \ \mathrm{and}
+    \  \forall j \in \hat{V}_1. \ \exists i \in \hat{V}_2. \ \hat{f}(i) = j
+\end{align*}
+
+Concretization of set expressions:
+
+\begin{align*}
+  &\env, \hat{V} \models X \ \mathrm{iff} \ s(X) = (\vset,\hat{V})
+\end{align*}
+
+
+
+Concretization of injectivity/surjectivity constraints:
+
+
+\begin{align*}
+  &\mathrm{isFunc}(\hat{f}, f, \mathrm{Domain}, \mathrm{Range}) = \\
+  &\qquad s(f) = (\vfunc, \hat{f}) \ \mathrm{and}
+   \ \mathrm{Dom}(\hat{f}) = \mathrm{Domain} \ \mathrm{and}
+   \ \mathrm{Rng}(\hat{f}) = \mathrm{Range}
+\end{align*}
+
+\begin{align*}
+  &\env \models \inject(f, \mathrm{Domain}, \mathrm{Range}) \ \mathrm{iff} \\
+  &\qquad \forall \hat{f}. \ \mathrm{isFunc}(\hat{f}, f, \mathrm{Domain}, \mathrm{Range}) \ \rightarrow
+   \ \forall i,j \in \mathrm{Domain}. \ i \neq j \rightarrow \hat{f}(i) \neq \hat{f}(i) \\
+  &\env \models \surject(f, \mathrm{Domain}, \mathrm{Range}) \ \mathrm{iff} \\
+  &\qquad \forall \hat{f}. \ \mathrm{isFunc}(\hat{f}, f, \mathrm{Domain}, \mathrm{Range}) \ \rightarrow
+   \ \forall i \in \mathrm{Range}. \ \exists j \in \mathrm{Domain}. \ \hat{f}(j) = i
+\end{align*}
+
